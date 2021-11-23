@@ -1,13 +1,13 @@
+from apscheduler.schedulers.blocking import BlockingScheduler
 from requests_html import HTMLSession
-import csv
 import time
+import csv
 
-def __init__():
-    #TODO: Error handling for improper URL/Public keys
-    #TODO: Allow option to output to google docs? If possible
-    file = open("pubkey.txt", "r")
+def main():
+    print(time.ctime())
 
     #Read the public key from the first line of the pubkey file
+    file = open("pubkey.txt", "r")
     url = 'https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=' + file.readline()
     file.close()
 
@@ -35,8 +35,8 @@ def __init__():
             #If the fle does exist, read the inital investment value on row 2
             reader = csv.reader(file, delimiter = ",")
             next(reader)
-            initialInvestment = next(reader)[3]
-            print(initialInvestment)
+            #Gets the initial investment from the first non-header row and formats it as float
+            initialInvestment = (float) (next(reader)[3].replace("$", ""))
             file.close()
 
     except FileNotFoundError:
@@ -54,4 +54,14 @@ def __init__():
         writer = csv.writer(file, delimiter = ",")
         writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),"$" + str(round(currPrice*balance, 2)),str(round(((currPrice*balance)-initialInvestment)/initialInvestment, 2)) + "%"])
         file.close()
-__init__()
+
+
+#Scheduler for running main every 8 hours
+scheduler = BlockingScheduler()
+
+scheduler.add_job(main, 'interval', hours = 8)
+
+try:
+        scheduler.start()
+except (KeyboardInterrupt, SystemExit):
+    pass
