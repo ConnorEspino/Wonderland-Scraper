@@ -9,7 +9,6 @@ def __init__():
 
     #Read the public key from the first line of the pubkey file
     url = 'https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=' + file.readline()
-
     file.close()
 
     session = HTMLSession()
@@ -31,9 +30,28 @@ def __init__():
     currPrice = priceString.replace("$", "")
     currPrice = (float) (currPrice.replace(",", ""))
 
+    try:
+        with open('output.csv', 'r') as file:
+            #If the fle does exist, read the inital investment value on row 2
+            reader = csv.reader(file, delimiter = ",")
+            next(reader)
+            initialInvestment = next(reader)[3]
+            print(initialInvestment)
+            file.close()
 
-    with open('output.csv', 'w') as file:
+    except FileNotFoundError:
+        #If the file doesn't exist, create it and set up header rows
+        with open('output.csv', 'w', newline = '') as file:
+            writer = csv.writer(file, delimiter = ",")
+            writer.writerow(["Timestamp","TIME Price","Amount of TIME","Value of TIME","ROI"])
+            #set the intial investment equal to the current value
+            initialInvestment = round(currPrice*balance, 2)
+            file.close()
+
+
+    #Append the new row of data to the file
+    with open('output.csv', 'a', newline = '') as file:
         writer = csv.writer(file, delimiter = ",")
-        writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),str(round(currPrice*balance, 2)),"ROI Here"])
-
+        writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),"$" + str(round(currPrice*balance, 2)),str(round(((currPrice*balance)-initialInvestment)/initialInvestment, 2)) + "%"])
+        file.close()
 __init__()
