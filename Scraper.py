@@ -3,14 +3,8 @@ from requests_html import HTMLSession
 import time
 import csv
 
-def main():
-    print(time.ctime())
-
-    #Read the public key from the first line of the pubkey file
-    file = open("pubkey.txt", "r")
-    url = 'https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=' + file.readline()
-    file.close()
-
+def outputToFile(fileNum, pubKey):
+    url = 'https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=' + pubKey
     session = HTMLSession()
 
     #Open the webpage and search for the right place to find balance
@@ -30,8 +24,10 @@ def main():
     currPrice = priceString.replace("$", "")
     currPrice = (float) (currPrice.replace(",", ""))
 
+    outputFile = "output" + str(fileNum) + ".csv"
+
     try:
-        with open('output.csv', 'r') as file:
+        with open(outputFile, 'r') as file:
             #If the fle does exist, read the inital investment value on row 2
             reader = csv.reader(file, delimiter = ",")
             next(reader)
@@ -41,7 +37,7 @@ def main():
 
     except FileNotFoundError:
         #If the file doesn't exist, create it and set up header rows
-        with open('output.csv', 'w', newline = '') as file:
+        with open(outputFile, 'w', newline = '') as file:
             writer = csv.writer(file, delimiter = ",")
             writer.writerow(["Timestamp","TIME Price","Amount of TIME","Value of TIME","ROI"])
             #set the intial investment equal to the current value
@@ -50,10 +46,28 @@ def main():
 
 
     #Append the new row of data to the file
-    with open('output.csv', 'a', newline = '') as file:
+    with open(outputFile, 'a', newline = '') as file:
         writer = csv.writer(file, delimiter = ",")
         writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),"$" + str(round(currPrice*balance, 2)),str(round(((currPrice*balance)-initialInvestment)/initialInvestment, 2)) + "%"])
         file.close()
+
+def main():
+    print(time.ctime())
+
+    #Read the public key from the first line of the pubkey file
+    file = open("pubkey.txt", "r")
+    count = 0
+
+    #Output info of each key to output file
+    while 1:
+        count += 1
+        key = file.readline()
+        if not key:
+            break
+        outputToFile(count, key)
+
+    file.close()
+
 
 
 #Scheduler for running main every 8 hours
