@@ -68,7 +68,7 @@ def main():
 
     file.close()
 
-
+main()
 
 #Scheduler for running main every 8 hours
 scheduler = BlockingScheduler()
