@@ -48,7 +48,7 @@ def outputToFile(fileNum, pubKey):
     #Append the new row of data to the file
     with open(outputFile, 'a', newline = '') as file:
         writer = csv.writer(file, delimiter = ",")
-        writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),"$" + str(round(currPrice*balance, 2)),str(round(((currPrice*balance)-initialInvestment)/initialInvestment, 2)) + "%"])
+        writer.writerow([time.ctime(time.time()),str(priceString),str(round(balance, 5)),"$" + str(round(currPrice*balance, 2)),str((round(((currPrice*balance)-initialInvestment)/initialInvestment, 2))* 100) + "%"])
         file.close()
 
 def main():
