@@ -32,7 +32,8 @@ def outputToFile(fileNum, pubKey):
             reader = csv.reader(file, delimiter = ",")
             next(reader)
             #Gets the initial investment from the first non-header row and formats it as float
-            initialInvestment = (float) (next(reader)[3].replace("$", ""))
+            initialInvestment = (next(reader)[3].replace("$", ""))
+            initialInvestment = (float) (initialInvestment.replace(",", ""))
             file.close()
 
     except FileNotFoundError:
