@@ -8,7 +8,7 @@ Copy your MetaMask public key for the wallet that contains the `AVAX` and `MEMO`
 
 From the directory containing all source files, run the scraper file using the following command:
 
-`python Scraper.py`
+```python Scraper.py```
 
 The program will run in the terminal and update the output spreadsheets every 8 hours.
 To exit the program, either press `Ctrl + C` in the terminal window or close the terminal window.
