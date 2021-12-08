@@ -4,12 +4,14 @@ import time
 import csv
 
 def outputToFile(fileNum, pubKey):
-    url = 'https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=' + pubKey
+    url = "https://snowtrace.io/token/0x136acd46c134e8269052c62a67042d6bdedde3c9?a=" + pubKey
     session = HTMLSession()
+    
+    url = url.replace("\n", "");
 
     #Open the webpage and search for the right place to find balance
     r = session.get(url)
-    container = r.html.find('div.col-md.u-ver-divider.u-ver-divider--left.u-ver-divider--none-md', first = True).text
+    container = r.html.find('#ContentPlaceHolder1_divFilteredHolderBalance.col-md.u-ver-divider.u-ver-divider--left.u-ver-divider--none-md', first = True).text
 
     #Remove unnecessary strings and cast as float
     balance = container.replace("Balance\n", "")
